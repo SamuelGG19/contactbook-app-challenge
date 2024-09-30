@@ -15,11 +15,10 @@ class Contact:
             self.tags.append(tag)
 
     def __str__(self) -> str:
-        data: str = f"Name: {self.name}\nPhone: {self.phone}\nEmail: {self.email}\nTags:"
+        tags = ""
         for tag in self.tags:
-            data += f" {tag}"
-        data += f"\nCreated on: {self.creation_date}"
-        return data
+            tags += f"{tag}, "
+        return f"Name: {self.name}\nPhone: {self.phone}\nEmail: {self.email}\nTags: {tags[:-2]}\nCreated on: {self.creation_date}"
 
 
 @dataclass
@@ -30,23 +29,14 @@ class ContactBook:
         self.contacts[phone] = Contact(name, phone, email, tags)
 
     def delete_contact(self, phone: str):
-        del self.contacts[phone]
+        if phone in self.contacts:
+            del self.contacts[phone]
 
     def list_contacts(self) -> list[Contact]:
-        contacts_list = [contact for contact in self.contacts.values()]
-        return contacts_list
+        return [contact for contact in self.contacts.values()]
 
     def contacts_by_tag(self, tag: str) -> list[Contact]:
-        contacts_list = []
-        for contact in self.contacts.values():
-            if tag in contact.tags:
-                contacts_list.append(contact)
-        return contacts_list
+        return [contact for contact in self.contacts.values() if tag in contact.tags]
 
     def search_by_criteria(self, name: str = "", phone: str = "", email: str = "") -> list[Contact]:
-        contacts_list = []
-        for contact in self.contacts.values():
-            if (name in contact.name or name == "") and (phone in contact.phone or phone == "") and (email in contact.email or email == ""):
-                contacts_list.append(contact)
-
-        return contacts_list
+        return [contact for contact in self.contacts.values() if (name in contact.name or name == "") and (phone in contact.phone or phone == "") and (email in contact.email or email == "")]
